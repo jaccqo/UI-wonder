@@ -214,8 +214,17 @@ class DatabaseWorker(QThread):
                 }
 
                 # Make a GET request to the endpoint
-                response = requests.get(f"{base_url}/get-cloud-user", params=params)
-
+                try:
+                    response = requests.get(f"{base_url}/get-cloud-user", params=params)
+                except Exception as e:
+                    error_message=str("Unable to reach Rumhtec servers")
+                    data = {"data": None, "message": f"{error_message} ", "status": 404}
+                    json_data = json.dumps(data)  # Convert dictionary to JSON string
+                    self.userReceived.emit(json_data)  # Emit the JSON string directly
+                    db_worker_running=False
+                
+                    return
+                    
                 # Check if the request was successful (status code 200)
                 if response.status_code == 200:
                     # Print the user data
@@ -255,12 +264,6 @@ class CreateUserWorker(QThread):
         self.is_loggedin = is_loggedin
         self.is_superuser=is_superuser
 
-        print(self.username)
-        print(self.email)
-        print(self.organization)
-        print(self.password)
-        print(self.is_loggedin)
-
        
 
         super().__init__()
@@ -284,7 +287,12 @@ class CreateUserWorker(QThread):
         }
 
         # Send a POST request to the endpoint with the data
-        response = requests.post(url, json=data)
+        try:
+            response = requests.post(url, json=data)
+        except Exception as e:
+            data = {"message": "Unable to reach Ruhmtech servers", "status": 400}
+            self.userCreated.emit(json.dumps(data))
+            return
 
         # Check the response status code and content
         if response.status_code == 200:
@@ -346,7 +354,12 @@ class LoginWorker(QThread):
         }
 
         # Send a POST request to the endpoint with the data
-        response = requests.post(url, json=data)
+        try:
+            response = requests.post(url, json=data)
+        except Exception as e:
+             self.loginResult.emit(False, "Unable to reach Ruhmtechh servers")
+             return
+
 
         # Check the response status code and content
         if response.status_code == 200:
@@ -392,7 +405,7 @@ def start_application():
     engine.rootContext().setContextProperty("backend", main)
 
     # Set App Extra Info
-    app.setOrganizationName("Ruhmtech")
+    app.setOrganizationName("Ruhmtechh")
     app.setOrganizationDomain("N/A")
 
     # Set Icon

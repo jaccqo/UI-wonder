@@ -4,6 +4,7 @@ import QtGraphicalEffects 1.15
 import QtQuick.Timeline 1.0
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+
 import "components"
 
 Window {
@@ -79,19 +80,25 @@ Window {
                     
             }
 
-            function displayStatus(message, success) {
-                // Set the status message
-                labelName.text = message;
+           function displayStatus(message, success) {
+            // Set the status message
+            labelName.text = message;
 
+            // Check if the message contains "verifying logged-in user" and set color accordingly
+            if (message.indexOf("Verifying logged-in user") !== -1) {
+                
+                labelName.color = "#ffd700"; // Yellow
+            } else {
                 // Set the color based on success or failure
                 labelName.color = success ? "#00FF00" : "#FF0000";
-
-                // Start the animation to show the label
-                labelNametextFieldAnimationRightMargin.running = true;
-                labelNameFieldOpacity.running = true;
-
-               
             }
+
+            // Start animation to display the label
+            labelNametextFieldAnimationRightMargin.running = true;
+            labelNameFieldOpacity.running = true;
+        }
+
+
             
 
           
@@ -167,6 +174,8 @@ Rectangle {
         }
     }
 
+
+
     
 
     Label {
@@ -191,7 +200,7 @@ Rectangle {
         target: labelName
         property: "anchors.rightMargin"
         to: labelName.anchors.rightMargin === 110 ? 30 : 110
-        duration: 500
+        duration: 1000
         easing.type: Easing.InOutQuint
         }
 
@@ -200,7 +209,7 @@ Rectangle {
             target: labelName
             property: "opacity"
             to: labelName.opacity === 0 ? 1 : 0
-            duration: 500
+            duration: 1000
             easing.type: Easing.InOutQuint
         }
     }
@@ -660,45 +669,57 @@ Rectangle {
             checkloggedin.running=false
             checkloggedin.repeat=false
 
-            internal.displayStatus("Checking login .. ", true);
+            internal.displayStatus("Verifying logged-in user. Please wait ! ", true);
             db_backend.startThread() // tries to login user by checking local db
 
-          
         }
     }
 
-    Connections {
+     Connections {
         target: db_backend // Specify the target object as the Backend component
         function onUserReceived(user) {
             var data = JSON.parse(user)
 
             if (data["status"] === 200) {
-                hiddenusername.text=data["data"]["username"]
-                hiddenEmail.text=data["data"]["email"]
-                hiddenOrg.text=data["data"]["organization"]
+                hiddenusername.text = data["data"]["username"];
+                hiddenEmail.text = data["data"]["email"];
+                hiddenOrg.text = data["data"]["organization"];
 
                 internal.displayStatus("login success .. ", true);
-                
+
                 loginAnimationFrameMarginTop.running = true;
 
                 timer.running = true;
-                
+
             } else {
-                // Check if the status is not 200 and retry
-                if (userloggedin.running) {
-                    // If the timer is not running, start it
-                    //userloggedin.restart()
-             
-                } else {
-                    // If the timer is not running, start it  
-                    userloggedin.start()
-
-                }
-
-                internal.displayStatus(data["message"], false)
+                internal.displayStatus(data["message"], false);
+                // Start the delay timer
+                delayTimer.running = true;
             }
         }
     }
+
+    Timer {
+        id: delayTimer
+        interval: 100 // Delay in milliseconds (adjust as needed)
+        onTriggered: {
+           
+
+            // Check if the status is not 200 and retry
+            if (userloggedin.running) {
+                // If the timer is running, restart it
+                userloggedin.restart();
+            } else {
+                // If the timer is not running, start it
+                userloggedin.start();
+            }
+
+        
+        }
+        running: false // Start the timer when needed
+        repeat: false // Run only once
+}
+
 
 
     Timer {
@@ -1016,9 +1037,9 @@ Rectangle {
                     // Login failed, show error message
                     labelPassword.text = message;
                     labelPassword.visible = true;
-                    labelPassword.color="#ff007f"
+                    labelPassword.color="#FF0000"
 
-                    loginTextField.borderColor = "#ff007f"; // Red color for incorrect input
+                    loginTextField.borderColor = "#FF0000"; // Red color for incorrect input
                 }
             }
         }
@@ -1112,7 +1133,7 @@ Rectangle {
     Label {
         id: labelPassword
         x: 311
-        color: "#ff007f" // Reddish color for incorrect password message
+        color: "#FF0000" // Reddish color for incorrect password message
         text: qsTr("password incorrect")
         anchors.right: parent.right
         anchors.top: loginTextField.bottom
@@ -1129,7 +1150,7 @@ Rectangle {
     Label {
         id: labelUsernameError
         x: 311
-        color: "#ff007f" // Reddish color for incorrect username message
+        color: "#FF0000" // Reddish color for incorrect username message
         text: qsTr("Username incorrect")
         anchors.right: parent.right
         anchors.top: usernameTextField.top // Assuming usernameTextField is the id of the username input field
