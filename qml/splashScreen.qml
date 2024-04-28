@@ -208,7 +208,7 @@ Rectangle {
             id: labelNameFieldOpacity
             target: labelName
             property: "opacity"
-            to: labelName.opacity === 0 ? 1 : 0
+            to: labelName.opacity === 0
             duration: 1000
             easing.type: Easing.InOutQuint
         }
