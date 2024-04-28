@@ -23,6 +23,7 @@ Window {
     // Remove title bar
     flags: Qt.SplashScreen | Qt.FramelessWindowHint
     modality: Qt.ApplicationModal
+    
 
     // Custom Properties
     property int timeoutInterval: 1000
@@ -30,76 +31,37 @@ Window {
     Timer {
         id: timer
         interval: timeoutInterval;
+       
         running: false;
         repeat: false
+        
         onTriggered: {
+       
             var component = Qt.createComponent("main.qml");
+
             var win = component.createObject()
+
+            win.loggedUsername=hiddenusername.text.trim()
+            win.hiddenOrg=hiddenOrg.text.trim()
+            win.hiddenEmail=hiddenEmail.text.trim()
+
             win.show()
             visible = false
             splashScreen.timeout()
         }
     }
 
+    
     // Functions
     QtObject {
         id: internal
-           
-
-            function checkLogin(){
-                var username = usernameTextField.text.trim(); // Get the username value
-                var password = loginTextField.text.trim(); // Get the password value and trim any leading/trailing spaces
-
-                var valid_username="jack"
-                var valid_password="jack"
-
-                // Perform validation for both username and password
-                if (username === valid_username && password === valid_password) {
-                    // Both username and password are correct
-                    loginTextField.borderColor = "#34eb83"; // Green color for correct input
-                    usernameTextField.borderColor= "#34eb83";
-                    labelPassword.visible = false;
-                    // Additional logic if login is successful
-                    proceedTomain()
-                    
-                } else {
-                   
-                    // Check which field caused the error
-                    if (username !== valid_username) {
-                        // Username is incorrect
-                        // Show an error message for username
-                 
-                        labelUsernameError.text = qsTr("Username incorrect");
-                        labelUsernameError.visible = true;
-                        usernameTextField.borderColor= "#ff007f";
-                        
-                    }
-                    else{
-                        labelUsernameError.visible = false;
-                        usernameTextField.borderColor= "#34eb83";
-
-                    }
-                    if (password !== valid_password) {
-                        // Password is incorrect
-                        // Show an error message for password
-                        labelPassword.text = qsTr("Password incorrect");
-                        labelPassword.visible = true;
-                        loginTextField.borderColor = "#ff007f"; // Red color for incorrect input
-                    }
-                    else{
-                         labelPassword.visible = true;
-                        loginTextField.borderColor = "#34eb83"; 
-
-                    }
-                }
-            }
-
 
             // Reset Text Error
             function resetTextLogin(){
                 labelPassword.visible = false
                 loginTextField.borderColor = "#333" // Slightly lighter border color
             }
+
             function resetUsernameLogin(){
                 labelUsernameError.visible = false
                 usernameTextField.borderColor = "#333" // Slightly lighter border color
@@ -116,6 +78,21 @@ Window {
 
                     
             }
+
+            function displayStatus(message, success) {
+                // Set the status message
+                labelName.text = message;
+
+                // Set the color based on success or failure
+                labelName.color = success ? "#00FF00" : "#FF0000";
+
+                // Start the animation to show the label
+                labelNametextFieldAnimationRightMargin.running = true;
+                labelNameFieldOpacity.running = true;
+
+               
+            }
+            
 
           
     }
@@ -190,19 +167,21 @@ Rectangle {
         }
     }
 
+    
+
     Label {
         id: labelName
-        y: 273
+        y: 295
         width: 294
         height: 25
         color: "#fff" // White text color
-        text: qsTr("Anonymous")
-        opacity:1
+        text: qsTr("")
+        opacity:0
         anchors.left: parent.left
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: -25
+
+        anchors.bottomMargin: -0
         anchors.leftMargin: 30
-        font.pointSize: 14
+        font.pointSize: 10
         font.bold: true
         font.family: "Arial" // Use a standard font like Arial
         font.weight: Font.DemiBold
@@ -250,8 +229,8 @@ Rectangle {
         anchors.bottomMargin: 20
         anchors.rightMargin: 30
         colorPressed: "#ffd700" // Yellowish golden color on press
-        colorMouseOver: "#444" // Darker gray color on mouse over
-        colorDefault: "#444" // Darker gray default color
+        colorMouseOver: "#222" // Darker gray color on mouse over
+        colorDefault: "#222" // Darker gray default color
         CustomToolTip {
 
             text: btnChangeUser.text === "Signup" ? "Sign up" : "Back"
@@ -276,8 +255,8 @@ Rectangle {
 
             btnSignText.running=true
 
-            signuptextFieldAnimationRightMargin.running=true
-            signuptextFieldOpacity.running = true
+            signuppasswordtextFieldAnimationRightMargin.running=true
+            signuppasswordtextFieldOpacity.running = true
             signupTextField.text = ""
 
             signupEmailAnimationRightMargin.running=true
@@ -291,6 +270,8 @@ Rectangle {
 
             labelNametextFieldAnimationRightMargin.running=true
             labelNameFieldOpacity.running=true
+            labelName.text=""
+
 
             addUserButtonAnimationRightMargin.running=true
             addUserButtonOpacity.running=true
@@ -298,7 +279,8 @@ Rectangle {
             switchlayoutAnimationRightMargin.running=true
             switchlayoutOpacity.running=true
 
-
+            signupOrgAnimationRightMargin.running=true
+            signupOrgOpacity.running=true
 
         }
         PropertyAnimation {
@@ -329,7 +311,7 @@ Rectangle {
         anchors.rightMargin: 110
         opacity: 0
         echoMode: TextInput.Password
-        maximumLength: 6
+        maximumLength: 100
 
          MouseArea {
             id: eyeIconArea
@@ -353,7 +335,7 @@ Rectangle {
     
 
         PropertyAnimation {
-            id: signuptextFieldAnimationRightMargin
+            id: signuppasswordtextFieldAnimationRightMargin
             target: signupTextField
             property: "anchors.rightMargin"
             to: signupTextField.anchors.rightMargin === 110 ? 30 : 110
@@ -362,7 +344,7 @@ Rectangle {
         }
 
         PropertyAnimation {
-            id: signuptextFieldOpacity
+            id: signuppasswordtextFieldOpacity
             target: signupTextField
             property: "opacity"
             to: signupTextField.opacity === 0 ? 1 : 0
@@ -374,8 +356,8 @@ Rectangle {
 
     RowLayout {
         id:switchlayout
-        x:220
-        y:35
+        x:115
+        y:240
         spacing: 10
 
         opacity: 0
@@ -418,6 +400,43 @@ Rectangle {
         }
     }
 
+    CustomTextField {
+        id: signupOrgField // Renamed to reflect organization name
+        x: 120
+        y: 35
+        width: 300
+        height: 40
+        horizontalAlignment: Text.AlignHCenter
+        font.pointSize: 10
+        placeholderText: "Enter Organization name"
+        color: "#fff" // Color for text
+        selectionColor: "#ffd700" // Color for selection
+        selectedTextColor: "#222" // Text color when selected
+        anchors.bottomMargin: 60
+        anchors.rightMargin: 110
+        opacity: 0
+        maximumLength: 1000 // Adjust maximum length as needed
+
+        PropertyAnimation {
+            id: signupOrgAnimationRightMargin // Renamed animation ID
+            target: signupOrgField
+            property: "anchors.rightMargin"
+            to: signupOrgField.anchors.rightMargin === 110 ? 30 : 110
+            duration: 500
+            easing.type: Easing.InOutQuint
+        }
+
+        PropertyAnimation {
+            id: signupOrgOpacity // Renamed animation ID
+            target: signupOrgField
+            property: "opacity"
+            to: signupOrgField.opacity === 0 ? 1 : 0
+            duration: 500
+            easing.type: Easing.InOutQuint
+        }
+    }
+
+
         
 
     CustomTextField {
@@ -435,7 +454,7 @@ Rectangle {
         anchors.bottomMargin: 60
         anchors.rightMargin: 110
         opacity: 0
-        maximumLength: 50 // Adjust maximum length as needed
+        maximumLength: 1000 // Adjust maximum length as needed
 
         PropertyAnimation {
             id: signupEmailAnimationRightMargin
@@ -472,7 +491,7 @@ Rectangle {
         anchors.bottomMargin: 60
         anchors.rightMargin: 110
         opacity: 0
-        maximumLength: 20 // Adjust maximum length as needed
+        maximumLength: 100 // Adjust maximum length as needed
 
         PropertyAnimation {
             id: signupUsernameAnimationRightMargin
@@ -493,20 +512,16 @@ Rectangle {
         }
     }
 
-
     CustomButton {
         id: addUserButton
         text: "Add User"
-        x: 2
-        y: 2
-        width: 150
+        x: 270
+        y: 240
+        width: 80
         height: 30
         opacity: 0
        
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 50
-        anchors.rightMargin: 70
+       
         colorPressed: "#ffd700" // Yellowish golden color on press
         colorMouseOver: "#444" // Darker gray color on mouse over
         colorDefault: "#444" // Darker gray default color
@@ -533,17 +548,57 @@ Rectangle {
         }
 
         onClicked: {
-            var username = "example_username"; // Replace "example_username" with the actual username
-            addToDatabase(username);
-        }
+            
+            // Check if all required fields are filled out
+            var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (signupUsernameField.text.trim() === "" ||
+                signupEmailField.text.trim() === "" ||
+                signupTextField.text.trim() === "") {
+                internal.displayStatus("Please fill out all fields before adding the user.")
+                return; // Exit the function if any field is empty
+            }
+            if (!signupEmailField.text.trim().match(emailPattern)) {
+                internal.displayStatus("Please enter a valid email address.")
+                return; // Exit the function if any field is empty or email format is incorrect
+            }
 
-        function addToDatabase(username) {
-            // Add your database handling logic here
-            console.log("Adding username to the database: " + username);
-            // For demonstration purposes, just print the username to the console
+            if (addUserButton.enabled) {
+                // Extract text from the fields
+                var username = signupUsernameField.text;
+                var email = signupEmailField.text;
+                var password = signupTextField.text;
+                var organization = signupOrgField.text;
+
+                // Disable the button to prevent multiple clicks
+                addUserButton.enabled = false;
+
+                // Add user information to the 
+                var is_superuser=mySwitch.checked
+                
+                db_backend.create_user(username, email, organization, password,is_superuser, true)
+
+                internal.displayStatus(`Adding ${username} to database please wait ..`, true);
+            }
+            
+         }
+    } 
+
+    Connections {
+        target: db_backend
+        function onUserCreated(user) {
+            var data = JSON.parse(user);
+            if (data["status"] === 200) {
+                internal.displayStatus(data["message"], true);
+                console.log("User added successfully");
+            } else {
+                console.error("Error adding user:", data["message"]);
+                internal.displayStatus(data["message"], false);
+            }
+            // Re-enable the button after the operation is complete
+            addUserButton.enabled = true;
         }
     }
-   
+
 
     Label {
         id: labelUnlockInfo1
@@ -561,7 +616,7 @@ Rectangle {
 
 
     }
-
+    
 
     Image {
         id: image1
@@ -577,18 +632,74 @@ Rectangle {
         fillMode: Image.PreserveAspectFit
     }
 
+    Label {
+        id: hiddenusername
+        visible: false // Initially hidden
+        text: "" // Use the passed username argument
+    }
+    Label {
+        id: hiddenEmail
+        visible: false // Initially hidden
+        text: "" // Use the passed username argument
+    }
+
+    Label {
+        id: hiddenOrg
+        visible: false // Initially hidden
+        text: "" // Use the passed username argument
+    }
+
+
 
     Timer {
         id: userloggedin
-        interval: 1 // Adjust the delay time as needed (in milliseconds)
+        interval: 1000 // Adjust the delay time as needed (in milliseconds)
         repeat: false // We want it to run only once
         running: false // We'll start it manually
         onTriggered: {
-            internal.proceedTomain() // Call the function when the timer triggers
             checkloggedin.running=false
             checkloggedin.repeat=false
+
+            internal.displayStatus("Checking login .. ", true);
+            db_backend.startThread() // tries to login user by checking local db
+
+          
         }
     }
+
+    Connections {
+        target: db_backend // Specify the target object as the Backend component
+        function onUserReceived(user) {
+            var data = JSON.parse(user)
+
+            if (data["status"] === 200) {
+                hiddenusername.text=data["data"]["username"]
+                hiddenEmail.text=data["data"]["email"]
+                hiddenOrg.text=data["data"]["organization"]
+
+                internal.displayStatus("login success .. ", true);
+                
+                loginAnimationFrameMarginTop.running = true;
+
+                timer.running = true;
+                
+            } else {
+                // Check if the status is not 200 and retry
+                if (userloggedin.running) {
+                    // If the timer is not running, start it
+                    //userloggedin.restart()
+             
+                } else {
+                    // If the timer is not running, start it  
+                    userloggedin.start()
+
+                }
+
+                internal.displayStatus(data["message"], false)
+            }
+        }
+    }
+
 
     Timer {
         id:checkloggedin
@@ -597,7 +708,7 @@ Rectangle {
         repeat: true
         onTriggered: {
             // check is the user is logged in and if progressbar is more than 100
-            if (circularProgressBar.value >= 50) {
+            if (circularProgressBar.value >= 0) {
                 userloggedin.start()
                 
             }
@@ -706,9 +817,9 @@ Rectangle {
     CustomTextField {
         id: loginTextField
         x: 230
-        y: 90
+        y: 100
         width: 160
-        height: 40
+        height: 30
       
         horizontalAlignment: Text.AlignHCenter
         font.pointSize: 10
@@ -721,7 +832,7 @@ Rectangle {
         anchors.rightMargin: 110
         opacity: 0
         echoMode: TextInput.Password
-        maximumLength: 6
+        maximumLength: 100
 
         MouseArea {
             id: eyeIconAreaLogin
@@ -766,9 +877,9 @@ Rectangle {
     CustomTextField {
         id: usernameTextField
         x: 230
-        y: 40
+        y: 60
         width: 160
-        height: 40
+        height: 30
    
         horizontalAlignment: Text.AlignHCenter
         font.pointSize: 10
@@ -779,7 +890,7 @@ Rectangle {
      
         opacity: 0
         echoMode: TextInput.Normal // Changed from Password to Normal
-        maximumLength: 6
+        maximumLength: 100
        
         PropertyAnimation {
             id: usertextFieldAnimationRightMargin
@@ -798,6 +909,43 @@ Rectangle {
             easing.type: Easing.InOutQuint
         }
     }
+
+    CustomTextField {
+        id: loginOrgField
+        x: 230
+        y: 25
+        width: 160
+        height: 30
+
+        horizontalAlignment: Text.AlignHCenter
+        font.pointSize: 10
+        placeholderText: "Organization" // Placeholder text updated to "Organization"
+        color: "#fff" // Color for text
+        selectionColor: "#ffd700" // Color for selection
+        selectedTextColor: "#222" // Text color when selected
+
+        opacity: 0
+        echoMode: TextInput.Normal // Changed from Password to Normal
+        maximumLength: 100
+
+        PropertyAnimation {
+            id: orgTextFieldAnimationRightMargin
+            target: loginOrgField
+            property: "anchors.rightMargin"
+            to: if(loginOrgField.anchors.rightMargin == 110) return 30; else return 110
+            duration: 500
+            easing.type: Easing.InOutQuint
+        }
+        PropertyAnimation {
+            id: orgTextFieldOpacity
+            target: loginOrgField
+            property: "opacity"
+            to: if(loginOrgField.opacity == 0) return 1; else return 0
+            duration: 500
+            easing.type: Easing.InOutQuint
+        }
+    }
+
 
 
     CustomButton {
@@ -819,9 +967,62 @@ Rectangle {
         colorDefault: "#444" // Darker gray default color
       
         onClicked: {
-            internal.checkLogin();
+            labelPassword.visible = false;
+
+                // Get the values from the input fields
+            var username = usernameTextField.text.trim();
+            var password = loginTextField.text.trim();
+            var loginorg = loginOrgField.text.trim();
+
+            // Check if all fields are filled out
+            if (!username || !password || !loginorg) {
+                // Show error message for incomplete fields
+                labelPassword.text = qsTr("Please fill out all fields before logging in.");
+                labelPassword.visible = true;
+                return; // Exit the function if any field is empty
+            }
+            if (loginButton.enabled){
+                    // Proceed with login request using backend function
+                db_backend.login(username, password, loginorg);
+
+                // Disable the login button until the response is received
+                labelName.text=""
+                loginButton.enabled = false;
+
+                labelPassword.visible = true;
+                labelPassword.color="#34eb83"
+               
+                labelPassword.text = "Checking loggin .... ";
+
+            }
     
         }
+        
+        Connections {
+            target: db_backend // Specify the target object as the Backend component
+            function onLoginResult(success, message) {
+                // Enable the login button when a response is received
+                loginButton.enabled = true;
+
+                // Handle the response
+                if (success) {
+                    // Login successful
+                    // Proceed to main 
+                    labelPassword.text = message;
+                    loginTextField.borderColor = "#34eb83"; // Green color for correct input
+                    usernameTextField.borderColor= "#34eb83";
+                   // proceedToMain();
+                } else {
+                    // Login failed, show error message
+                    labelPassword.text = message;
+                    labelPassword.visible = true;
+                    labelPassword.color="#ff007f"
+
+                    loginTextField.borderColor = "#ff007f"; // Red color for incorrect input
+                }
+            }
+        }
+
 
         PropertyAnimation {
             id: loginButtonAnimationRightMargin // Changed animation id to reflect its purpose as a login button animation
@@ -879,9 +1080,18 @@ Rectangle {
             loginButtonAnimationRightMargin.running=true
             loginButtonOpacity.running=true
 
+            orgTextFieldAnimationRightMargin.running=true
+            orgTextFieldOpacity.running=true
+
+
             btnText.running = true
             loginTextField.text = ""
             usernameTextField.text=""
+            loginOrgField.text=""
+
+            
+            
+
             internal.resetTextLogin()
             internal.resetUsernameLogin()
         }

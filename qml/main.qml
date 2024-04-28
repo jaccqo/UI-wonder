@@ -19,10 +19,15 @@ Window {
 
     // Remove title bar
     flags: Qt.Window | Qt.FramelessWindowHint
+    // ... your QML object definition here ...
+
+    property string loggedUsername: ""
+    property string hiddenEmail:""
+    property string hiddenOrg:""
+
 
     // Text Edit Properties
     property alias actualPage: stackView.currentItem
-    property bool isValueVisible: true
     property int windowStatus: 0
     property int windowMargin: 10
     property int bgRadius: 20
@@ -31,15 +36,22 @@ Window {
     QtObject{
         id: internal
 
-        function resetResizeBorders(){
-            // Resize visibility
-            resizeLeft.visible = true
-            resizeRight.visible = true
-            resizeBottom.visible = true
-            resizeApp.visible = true
-            bg.radius = bgRadius
-            bg.border.width = 3
+    
+
+        function resetResizeBorders() {
+            try {
+                // Resize visibility
+                resizeLeft.visible = true
+                resizeRight.visible = true
+                resizeBottom.visible = true
+                resizeApp.visible = true
+                bg.radius = bgRadius
+                bg.border.width = 3
+            } catch (error) {
+                console.error("An error occurred while resetting resize borders:", error)
+            }
         }
+
 
         function maximizeRestore(){
             if(windowStatus == 0){
@@ -113,10 +125,25 @@ Window {
             anchors.topMargin: 8
             btnIconSource: "../images/svg_images/close_icon.svg"
             CustomToolTip {
-                text: "Sair"
+                text: "Close"
             }
             onPressed: mainWindow.close()
         }
+
+
+        Timer {
+            id: timer
+            interval: timeoutInterval;
+            running: false;
+            repeat: false
+
+            onTriggered: {
+                mainWindow.close()
+            }
+
+            }
+
+
 
         TopBarButton {
             id: btnMaximizeRestore
@@ -193,13 +220,16 @@ Window {
                 id: labelTitleBar
                 y: 14
                 color: "#ffd700"
-                text: qsTr("RUHMTECH SYSTEMS - Hi, Anonymous")
+                text: qsTr("RUHMTECH SYSTEMS - Hi, "+loggedUsername)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: iconTopLogo.right
                 font.pointSize: 12
                 font.family: "Segoe UI"
                 anchors.leftMargin: 15
             }
+
+
+
         }
 
         Flickable {
@@ -227,94 +257,6 @@ Window {
                 CustomAppButton{
                     text: "Pix"
                     setIcon: "../images/svg_images/pix_icon.svg"
-                    font.pointSize: 9
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                    onClicked: stackView.push("pages/pageNoInternet.qml")
-                }
-
-                CustomAppButton{
-                    text: "Pay"
-                    setIcon: "../images/svg_images/codebar_icon.svg"
-                    font.pointSize: 9
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                    onClicked: stackView.push("pages/pageNoInternet.qml")
-                }
-
-                CustomAppButton{
-                    text: "Send Friends"
-                    setIcon: "../images/svg_images/indicar_amigos_icon.svg"
-                    font.pointSize: 9
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                    onClicked: stackView.push("pages/pageNoInternet.qml")
-                }
-
-                CustomAppButton{
-                    text: "Send Money"
-                    setIcon: "../images/svg_images/transferir_icon.svg"
-                    font.pointSize: 9
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                    onClicked: stackView.push("pages/pageNoInternet.qml")
-                }
-
-                CustomAppButton{
-                    text: "Values"
-                    setIcon: "../images/svg_images/depositar_icon.svg"
-                    font.pointSize: 9
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                    onClicked: stackView.push("pages/pageNoInternet.qml")
-                }
-
-                CustomAppButton{
-                    text: "Loan"
-                    setIcon: "../images/svg_images/emprestimos_icon.svg"
-                    font.pointSize: 9
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                    onClicked: stackView.push("pages/pageNoInternet.qml")
-                }
-
-                CustomAppButton{
-                    text: "Virtual Card"
-                    setIcon: "../images/svg_images/virtual_cart_icon.svg"
-                    font.pointSize: 9
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                    onClicked: stackView.push("pages/pageNoInternet.qml")
-                }
-
-                CustomAppButton{
-                    text: "Cell Phone Credits"
-                    setIcon: "../images/svg_images/smartphone_icon.svg"
-                    font.pointSize: 9
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                    onClicked: stackView.push("pages/pageNoInternet.qml")
-                }
-
-                CustomAppButton{
-                    text: "Limits"
-                    setIcon: "../images/svg_images/adjustments_icon.svg"
-                    font.pointSize: 9
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                    onClicked: stackView.push("pages/pageNoInternet.qml")
-                }
-
-                CustomAppButton{
-                    text: "Block Card"
-                    setIcon: "../images/svg_images/lock_icon.svg"
-                    font.pointSize: 9
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                    onClicked: stackView.push("pages/pageNoInternet.qml")
-                }
-
-                CustomAppButton{
-                    text: "Demand"
-                    setIcon: "../images/svg_images/cobrar_icon.svg"
-                    font.pointSize: 9
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                    onClicked: stackView.push("pages/pageNoInternet.qml")
-                }
-
-                CustomAppButton{
-                    text: "Installment"
-                    setIcon: "../images/svg_images/dividir_icon.svg"
                     font.pointSize: 9
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     onClicked: stackView.push("pages/pageNoInternet.qml")
@@ -377,7 +319,7 @@ Window {
                 btnIconSource: "../images/svg_images/home_icon.svg"
                 onClicked: {
                     stackView.push(Qt.resolvedUrl("pages/homePage.qml"))
-                    actualPage.showValue = isValueVisible
+                    
                 }
             }
 
@@ -404,31 +346,7 @@ Window {
                 }
             }
 
-            // CustomCircularButton {
-            //     id: btnShowHide
-            //     visible: true
-            //     width: 50
-            //     height: 50
-            //     CustomToolTip {
-            //         text: "Ocultar valores da conta"
-            //     }
-            //     btnIconSource: "../images/svg_images/eye_open_icon.svg"
-            //     onClicked: {
-            //         if(isValueVisible == true){
-            //             isValueVisible = false
-            //             if(typeof actualPage.showValue !== 'undefined'){
-            //                 actualPage.showValue = isValueVisible
-            //             }
-            //             btnShowHide.btnIconSource = "../images/svg_images/eye_close_icon.svg"
-            //         } else{
-            //             isValueVisible = true
-            //             if(typeof actualPage.showValue !== 'undefined'){
-            //                 actualPage.showValue = isValueVisible
-            //             }
-            //             btnShowHide.btnIconSource = "../images/svg_images/eye_open_icon.svg"
-            //         }
-            //     }
-            // }
+            
         }
 
         Rectangle {
@@ -515,20 +433,24 @@ Window {
                 }
 
                 LeftButton {
-                    text: "Settings"
-                    btnIconSource: "../images/svg_images/moeda_icon.svg"
+            
+                    text: "\uf013 Settings" // Unicode character for the cog icon in Font Awesome
+                    font.family: fontAwesomeLoader.name // Set the font family to the loaded Font Awesome font
+                    btnIconSource:""
+                    
                     onClicked: stackView.push("pages/pageNoInternet.qml")
 
                     colorPressed: "#ffd700" // Yellowish gold color when pressed
                     colorMouseOver: "#222" // Yellowish gold color on mouse over
                     colorDefault: "#333" // White color by default
-                
                 }
+
 
                 anchors.topMargin: 10
             }
 
             CustomButton {
+                    id:"logoutbtn"
                     width: 220
                     height: 30
                     text: "LOGOUT"
@@ -550,12 +472,30 @@ Window {
                         font.bold: true
                     }
 
-                    MouseArea {
+                   MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            console.log("loggin out")
+                            logoutbtn.text="Loggin out .."
+                            db_backend.logout(loggedUsername);
+                           
                         }
                     }
+
+                    Connections {
+                        target: db_backend // Specify the target object as the backend component
+                        function onLogoutSignal(success) {
+                            // Handle the logout signal
+                            if (success) {
+                                // Logout successful, perform any necessary actions
+                                console.log("Logout successful");
+                                timer.running = true;
+                            } else {
+                                // Logout failed, handle error if needed
+                                console.error("Logout failed");
+                            }
+                        }
+                    }
+
             }
 
             
@@ -597,38 +537,56 @@ Window {
     }
 
 
-    MouseArea {
-        id: resizeLeft
-        width: 12
-        anchors.left: parent.left
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 15
-        anchors.leftMargin: 0
-        anchors.topMargin: 10
-        cursorShape: Qt.SizeHorCursor
-        DragHandler{
-            target: null
-            onActiveChanged: if (active) { mainWindow.startSystemResize(Qt.LeftEdge) }
+        MouseArea {
+            id: resizeLeft
+            width: 12
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 15
+            anchors.leftMargin: 0
+            anchors.topMargin: 10
+            cursorShape: Qt.SizeHorCursor
+            DragHandler {
+                target: null
+                onActiveChanged: {
+                    try {
+                        if (active) { 
+                            mainWindow.startSystemResize(Qt.LeftEdge) 
+                        }
+                    } catch (error) {
+                        console.error("An error occurred during resizing:", error)
+                    }
+                }
+            }
         }
-    }
 
-    MouseArea {
-        id: resizeRight
-        width: 12
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.rightMargin: 0
-        anchors.bottomMargin: 25
-        anchors.leftMargin: 6
-        anchors.topMargin: 10
-        cursorShape: Qt.SizeHorCursor
-        DragHandler{
-            target: null
-            onActiveChanged: if (active) { mainWindow.startSystemResize(Qt.RightEdge) }
+
+        MouseArea {
+            id: resizeRight
+            width: 12
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.rightMargin: 0
+            anchors.bottomMargin: 25
+            anchors.leftMargin: 6
+            anchors.topMargin: 10
+            cursorShape: Qt.SizeHorCursor
+            DragHandler {
+                target: null
+                onActiveChanged: {
+                    try {
+                        if (active) { 
+                            mainWindow.startSystemResize(Qt.RightEdge) 
+                        }
+                    } catch (error) {
+                        console.error("An error occurred during resizing:", error)
+                    }
+                }
+            }
         }
-    }
+
 
     MouseArea {
         id: resizeBottom
@@ -640,11 +598,20 @@ Window {
         anchors.rightMargin: 25
         anchors.leftMargin: 15
         anchors.bottomMargin: 0
-        DragHandler{
+        DragHandler {
             target: null
-            onActiveChanged: if (active) { mainWindow.startSystemResize(Qt.BottomEdge) }
+            onActiveChanged: {
+                try {
+                    if (active) { 
+                        mainWindow.startSystemResize(Qt.BottomEdge) 
+                    }
+                } catch (error) {
+                    console.error("An error occurred during resizing:", error)
+                }
+            }
         }
     }
+
 
     MouseArea {
         id: resizeApp

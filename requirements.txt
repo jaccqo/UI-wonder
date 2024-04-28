@@ -1,0 +1,8 @@
+termcolor
+colorama
+werkzeug
+datetime
+flask
+pymongo[srv]
+pyside2
+requests

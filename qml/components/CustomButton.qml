@@ -21,6 +21,7 @@ Button {
     }
 
     text: qsTr("Button")
+    enabled:true
     contentItem: Item{
         Text {
             id: name
