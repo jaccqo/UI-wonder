@@ -11,7 +11,7 @@ import sqlite3
 import requests
 
 
-base_url = "http://localhost:5000"  # Change the URL if your Flask server is running on a different address
+base_url = "http://192.168.100.4:5000"  # Change the URL if your Flask server is running on a different address
 db_worker_running=False
 # Define the User class
 class User:
@@ -357,7 +357,7 @@ class LoginWorker(QThread):
         try:
             response = requests.post(url, json=data)
         except Exception as e:
-             self.loginResult.emit(False, "Unable to reach Ruhmtechh servers")
+             self.loginResult.emit(False, "Unable to reach Ruhmtech servers")
              return
 
 
@@ -405,7 +405,7 @@ def start_application():
     engine.rootContext().setContextProperty("backend", main)
 
     # Set App Extra Info
-    app.setOrganizationName("Ruhmtechh")
+    app.setOrganizationName("Ruhmtech")
     app.setOrganizationDomain("N/A")
 
     # Set Icon

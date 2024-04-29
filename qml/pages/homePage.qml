@@ -37,166 +37,21 @@ Item {
                 border.color: "#333" // Slightly lighter border color
                 border.width: 1
 
-                Rectangle {
-                    id: whiteCard_3
-                    width: 340
-                    color: "#ffffff"
-                    radius: 10
-                    anchors.left: parent.left
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
-                    Image {
-                        id: iconCart2
-                        width: 30
-                        height: 30
-                        visible: false
-                        anchors.left: parent.left
-                        anchors.top: parent.top
-                        source: "../../images/svg_images/moeda_icon.svg"
-                        fillMode: Image.PreserveAspectFit
-                        sourceSize.height: 30
-                        sourceSize.width: 30
-                        anchors.leftMargin: 15
-                        anchors.topMargin: 15
-                        antialiasing: false
-                    }
+               
 
-                    ColorOverlay {
-                        color: "#33334c"
-                        anchors.fill: iconCart2
-                        source: iconCart2
-                        antialiasing: false
-                    }
+               // Main content area
+               
+               
 
-                    Label {
-                        id: labelTitleBar8
-                        x: 58
-                        y: 20
-                        color: "#33334c"
-                        text: qsTr("Rewards")
-                        font.bold: true
-                        font.family: "Segoe UI"
-                        font.pointSize: 11
-                    }
 
-                    Label {
-                        id: labelTitleBar9
-                        x: 15
-                        y: 129
-                        width: 190
-                        height: 17
-                        color: "#767676"
-                        text: qsTr("My points")
-                        font.family: "Segoe UI"
-                        font.pointSize: 10
-                    }
-
-                    Label {
-                        id: textValue_6
-                        x: 15
-                        y: 169
-                        color: "#767676"
-                        text: "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Points: <span style=\" font-weight:600; color:#55aa00;\">55.530</span></p></body></html>"
-                        font.family: "Segoe UI"
-                        textFormat: Text.RichText
-                        font.pointSize: 10
-                        visible: showValue
-                    }
-
-                    CustomButton {
-                        x: 227
-                        y: 153
-                        width: 108
-                        height: 30
-                        text: "ACCESS"
-                        anchors.right: parent.right
-                        anchors.bottom: parent.bottom
-                        colorMouseOver: "#40405f"
-                        colorDefault: "#33334c"
-                        anchors.bottomMargin: 17
-                        anchors.rightMargin: 15
-                        colorPressed: "#55aaff"
-                    }
-
-                    Label {
-                        id: labelTitleBar10
-                        x: 15
-                        y: 146
-                        width: 190
-                        height: 17
-                        color: "#767676"
-                        text: qsTr("Rewards")
-                        font.family: "Segoe UI"
-                        font.pointSize: 10
-                    }
-                    anchors.bottomMargin: 10
-                    anchors.topMargin: 10
-                    anchors.leftMargin: 10
-                }
-
-                Label {
-                    id: labelTitleBar12
-                    y: 60
-                    color: "#ffffff"
-                    text: qsTr("$ 1,00 = 1 Point")
-                    anchors.left: whiteCard_3.right
-                    font.bold: true
-                    anchors.leftMargin: 37
-                    font.family: "Segoe UI"
-                    font.pointSize: 11
-                }
-
-                Label {
-                    id: labelTitleBar13
-                    x: 387
-                    y: 86
-                    color: "#ffffff"
-                    text: qsTr("Buy and receive points")
-                    anchors.left: whiteCard_3.right
-                    font.bold: true
-                    font.family: "Segoe UI"
-                    font.pointSize: 11
-                    anchors.leftMargin: 37
-                }
-
-                Label {
-                    id: labelTitleBar14
-                    x: 387
-                    y: 105
-                    color: "#ffffff"
-                    text: qsTr("Some text here")
-                    anchors.left: whiteCard_3.right
-                    font.family: "Segoe UI"
-                    font.pointSize: 10
-                    anchors.leftMargin: 37
-                }
-
-                Label {
-                    id: labelTitleBar15
-                    x: 387
-                    y: 124
-                    color: "#ffffff"
-                    text: qsTr("Another text")
-                    anchors.left: whiteCard_3.right
-                    font.family: "Segoe UI"
-                    font.pointSize: 10
-                    anchors.leftMargin: 37
-                }
-
-                Label {
-                    id: labelTitleBar16
-                    x: 387
-                    y: 147
-                    color: "#da7dff"
-                    text: qsTr("Access now")
-                    anchors.left: whiteCard_3.right
-                    font.underline: true
-                    font.family: "Segoe UI"
-                    font.pointSize: 10
-                    anchors.leftMargin: 37
-                }
+                  
             }
+
+    
+
+
         }
+        
         ScrollBar.vertical: ScrollBar {
             id: control
             size: 0.3

@@ -1013,7 +1013,8 @@ Rectangle {
                 labelPassword.visible = true;
                 labelPassword.color="#34eb83"
                
-                labelPassword.text = "Checking loggin .... ";
+                labelPassword.text = "Logging in...";
+
 
             }
     

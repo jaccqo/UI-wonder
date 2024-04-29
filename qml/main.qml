@@ -220,7 +220,7 @@ Window {
                 id: labelTitleBar
                 y: 14
                 color: "#ffd700"
-                text: qsTr("RUHMTECH SYSTEMS - Hi, "+loggedUsername)
+                text: qsTr("RUHMTECH SYSTEMS - "+loggedUsername)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: iconTopLogo.right
                 font.pointSize: 12
@@ -230,7 +230,33 @@ Window {
 
 
 
+
         }
+
+       Rectangle {
+            id: appVersion
+            width: parent.width
+            height: 30
+            color: "#222"
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+
+            Label {
+                id: labelVersion
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.right: parent.right
+                anchors.rightMargin: 8
+                color: "#ffd700"
+                text:qsTr("RTS - Version 1.0")
+
+                font.pointSize: 7
+                font.family: "Segoe UI"
+                padding: 8
+            }
+        }
+
+
+
 
         Flickable {
             id: flickable
@@ -254,29 +280,35 @@ Window {
                 
                 rows: 0
 
-                CustomAppButton{
-                    text: "Pix"
-                    setIcon: "../images/svg_images/pix_icon.svg"
+                FontLoader {
+                    id: fontAwesomeLoader
+                    source: "../fonts/fontawesome-webfont.ttf" // Path to your FontAwesome TTF file
+                }
+
+                CustomAppButton {
+                    text: "\uf002 Product Lookup" // Unicode value for the search icon followed by text
+                    font.family: fontAwesomeLoader.name // Use the name of the loaded font
+                    font.pointSize: 9 // Adjust the font size as needed
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    onClicked: stackView.push("pages/pageNoInternet.qml")
+                }
+
+                CustomAppButton {
+                    text: "\uf007 Customer Info" // Unicode value for the user icon followed by text
+                    font.family: fontAwesomeLoader.name
                     font.pointSize: 9
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     onClicked: stackView.push("pages/pageNoInternet.qml")
                 }
 
-                CustomAppButton{
-                    text: "Donate"
-                    setIcon: "../images/svg_images/emprestimos_icon.svg"
+                CustomAppButton {
+                    text: "\uf05a Inventory" // Unicode value for the barcode icon followed by text
+                    font.family: fontAwesomeLoader.name
                     font.pointSize: 9
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     onClicked: stackView.push("pages/pageNoInternet.qml")
                 }
 
-                CustomAppButton{
-                    text: "Help"
-                    setIcon: "../images/svg_images/help_icon.svg"
-                    font.pointSize: 9
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                    onClicked: stackView.push("pages/pageNoInternet.qml")
-                }
 
             }
             ScrollBar.horizontal: ScrollBar {
@@ -290,7 +322,9 @@ Window {
                     implicitWidth: 100
                     implicitHeight: 6
                     radius: height / 2
-                     color: control.pressed ? "#222" : "#ffd700"
+                    color: control.pressed ? "#222" : "#ffd700"
+
+                    
                 }
             }
         }
@@ -314,7 +348,7 @@ Window {
                 visible: true
          
                 CustomToolTip {
-                    text: "Home"
+                    text: "Point of sale"
                 }
                 btnIconSource: "../images/svg_images/home_icon.svg"
                 onClicked: {
